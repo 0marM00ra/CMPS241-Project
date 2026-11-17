@@ -25,10 +25,20 @@ On your turn, enter the row and column of the first dot, then the second dot:
 
 This draws a horizontal line between dot (0,0) and dot (0,1).
 
+## Project structure
+
+| File | Purpose |
+|---|---|
+| `src/board.h`, `src/board.c` | Grid data, drawing the board, validating and drawing lines, checking whether a box is complete |
+| `src/game.h`, `src/game.c` | Turns, awarding boxes, scores, game loop and winner |
+| `src/input.h`, `src/input.c` | Reading and validating player input |
+| `src/main.c` | Entry point; starts a game and offers a rematch |
+| `Makefile` | Builds `dotsboxes` |
+
 ## Debugging
 
-    valgrind --leak-check=full ./dotsboxes
-    gdb ./dotsboxes
+    make valgrind   # valgrind --leak-check=full ./dotsboxes
+    make gdb        # gdb ./dotsboxes
 
 ## License
 
