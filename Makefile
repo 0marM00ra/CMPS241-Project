@@ -20,6 +20,13 @@ src/input.o: src/input.c src/input.h src/board.h
 src/game.o: src/game.c src/game.h src/input.h src/board.h
 	$(CC) $(CFLAGS) -o $@ $<
 
-.PHONY: clean
+.PHONY: clean valgrind gdb
+valgrind: $(OUTPUT)
+	valgrind --leak-check=full ./$(OUTPUT) 2> valgrind.txt
+	@cat valgrind.txt
+
+gdb: $(OUTPUT)
+	gdb ./$(OUTPUT)
+
 clean:
 	@rm -rf src/*.o $(OUTPUT)
