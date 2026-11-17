@@ -1,30 +1,25 @@
-CC      = gcc
-CFLAGS  = -std=c99 -Wall -Wextra -pedantic -g
-TARGET  = dotsboxes
+SOURCES = src/main.c src/board.c src/input.c src/game.c
+OBJECTS = $(SOURCES:.c=.o)
 
-SRCS    = $(wildcard src/*.c)
-OBJS    = $(SRCS:.c=.o)
-HEADERS = $(wildcard src/*.h)
+CC = gcc
+CFLAGS = -Wall -g -c
+OUTPUT = dotsboxes
 
-.PHONY: all run valgrind gdb clean
+$(OUTPUT): $(OBJECTS)
+	$(CC) -o $@ $^
 
-all: $(TARGET)
+src/main.o: src/main.c src/game.h src/input.h src/board.h
+	$(CC) $(CFLAGS) -o $@ $<
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+src/board.o: src/board.c src/board.h
+	$(CC) $(CFLAGS) -o $@ $<
 
-# Rebuild every object if any header changes
-src/%.o: src/%.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+src/input.o: src/input.c src/input.h src/board.h
+	$(CC) $(CFLAGS) -o $@ $<
 
-run: $(TARGET)
-	./$(TARGET)
+src/game.o: src/game.c src/game.h src/input.h src/board.h
+	$(CC) $(CFLAGS) -o $@ $<
 
-valgrind: $(TARGET)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(TARGET)
-
-gdb: $(TARGET)
-	gdb ./$(TARGET)
-
+.PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET)
+	@rm -rf src/*.o $(OUTPUT)
