@@ -1,0 +1,16 @@
+# Build output
+*.o
+*.out
+*.a
+*.so
+dotsboxes
+
+# Debug files
+vgcore.*
+core
+*.dSYM/
+
+# Editor/OS junk
+.vscode/
+.idea/
+.DS_Store
