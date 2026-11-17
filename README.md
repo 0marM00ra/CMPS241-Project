@@ -37,8 +37,8 @@ This draws a horizontal line between dot (0,0) and dot (0,1).
 
 ## Debugging
 
-    make valgrind   # valgrind --leak-check=full ./dotsboxes
-    make gdb        # gdb ./dotsboxes
+    valgrind --leak-check=full ./dotsboxes
+    gdb ./dotsboxes
 
 ## License
 
