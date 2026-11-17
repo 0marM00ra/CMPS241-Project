@@ -34,8 +34,6 @@ typedef struct {
 void board_init(Board *b);
 void board_print(const Board *b);
 
-/* Checks that a move is legal. On success, reorders the move so that
- * (r1, c1) is the top/left dot. */
 MoveError board_check_move(const Board *b, Move *m);
 const char *board_move_error_message(MoveError err);
 
