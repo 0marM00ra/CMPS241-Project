@@ -4,9 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* start with every line undrawn and every box unowned */
 void board_init(Board *b)
 {
-    memset(b, 0, sizeof *b);
+    memset(b, 0, sizeof *b);    /* sets all the lines to false */
     for (int r = 0; r < BOX_ROWS; r++) {
         for (int c = 0; c < BOX_COLS; c++) {
             b->owner[r][c] = NO_OWNER;
@@ -16,6 +17,7 @@ void board_init(Board *b)
 
 void board_print(const Board *b)
 {
+    /* column numbers on top */
     printf("  ");
     for (int c = 0; c < DOT_COLS; c++) {
         printf("%d ", c);
@@ -23,15 +25,18 @@ void board_print(const Board *b)
     printf("\n");
 
     for (int r = 0; r < DOT_ROWS; r++) {
+        /* row of dots with the horizontal lines between them */
         printf("%d ", r);
         for (int c = 0; c < DOT_COLS; c++) {
             putchar('.');
-            if (c < BOX_COLS) {
+            if (c < BOX_COLS) {     /* the last dot has no line after it */
                 putchar(b->h[r][c] ? '-' : ' ');
             }
         }
         printf("\n");
 
+        /* row with the vertical lines and the box owners
+           (the last row of dots has no boxes under it) */
         if (r < BOX_ROWS) {
             printf("  ");
             for (int c = 0; c < DOT_COLS; c++) {
@@ -45,6 +50,7 @@ void board_print(const Board *b)
     }
 }
 
+/* checks that a dot is really on the board */
 static bool dot_in_range(int r, int c)
 {
     return r >= 0 && r < DOT_ROWS && c >= 0 && c < DOT_COLS;
@@ -52,19 +58,24 @@ static bool dot_in_range(int r, int c)
 
 MoveError board_check_move(const Board *b, Move *m)
 {
+    /* both dots must be on the board */
     if (!dot_in_range(m->r1, m->c1) || !dot_in_range(m->r2, m->c2)) {
         return MOVE_OUT_OF_RANGE;
     }
 
+    /* the dots must be neighbours (distance of exactly 1, so no diagonals) */
     if (abs(m->r1 - m->r2) + abs(m->c1 - m->c2) != 1) {
         return MOVE_NOT_ADJACENT;
     }
 
+    /* put the dots in order (top to bottom or left to right)
+       so the same line is always stored the same way */
     if (m->r2 < m->r1 || m->c2 < m->c1) {
         Move swapped = { m->r2, m->c2, m->r1, m->c1 };
         *m = swapped;
     }
 
+    /* same row means horizontal line, otherwise it's vertical */
     bool horizontal = (m->r1 == m->r2);
     bool drawn = horizontal ? b->h[m->r1][m->c1] : b->v[m->r1][m->c1];
     if (drawn) {
@@ -89,6 +100,7 @@ const char *board_move_error_message(MoveError err)
     }
 }
 
+/* assumes the move was already checked and the dots are in order */
 void board_draw_line(Board *b, Move m)
 {
     if (m.r1 == m.r2) {
@@ -98,6 +110,7 @@ void board_draw_line(Board *b, Move m)
     }
 }
 
+/* a box is complete when top, bottom, left and right are all drawn */
 bool board_box_complete(const Board *b, int r, int c)
 {
     return b->h[r][c] && b->h[r + 1][c] && b->v[r][c] && b->v[r][c + 1];
